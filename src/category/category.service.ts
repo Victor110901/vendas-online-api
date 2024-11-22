@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './entity/category.entity';
 import { Repository } from 'typeorm';
 import { NotFoundError } from 'rxjs';
+import { CreateCategoryDto } from './dtos/create-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -20,5 +21,11 @@ export class CategoryService {
         }
 
         return categories;
+    }
+
+    async createCategory(
+        createCategory: CreateCategoryDto
+    ): Promise<CategoryEntity> {
+        return this.categoryRepository.save(createCategory);
     }
 }
