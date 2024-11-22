@@ -15,6 +15,7 @@ describe('CategoryService', () => {
       providers: [CategoryService, {
         provide: getRepositoryToken(CategoryEntity),
         useValue: {
+          findOne: jest.fn().mockResolvedValue(categoryMock),
           find: jest.fn().mockResolvedValue([categoryMock]),
           save: jest.fn().mockResolvedValue(categoryMock),
         }
@@ -51,6 +52,8 @@ describe('CategoryService', () => {
   });
 
   it('should return category after save', async () => {
+    jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(undefined);
+
     const category = await service.createCategory(createCategoryMock);
 
     expect(category).toEqual(categoryMock);
@@ -60,5 +63,21 @@ describe('CategoryService', () => {
     jest.spyOn(categoryRepository, 'save').mockRejectedValue(new Error());
 
     expect(service.createCategory(createCategoryMock)).rejects.toThrowError();
+  });
+    
+  it('should return error if exist category name', async () => {
+    expect(service.createCategory(categoryMock)).rejects.toThrowError();
+  }); 
+
+  it('should return category in find by name', async () => {
+    const category = await service.findCategoryByName(categoryMock.name);
+
+    expect(category).toEqual(categoryMock);
+  });
+  
+  it('should return error if category find by name empty', async () => {
+    jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(undefined);
+
+    expect(service.findCategoryByName(categoryMock.name)).rejects.toThrowError();
   });
 });
