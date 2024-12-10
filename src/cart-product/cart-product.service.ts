@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartProductEntity } from './entity/cart-product.entity';
 import { Repository } from 'typeorm';
-import { InsertCartDto } from 'src/cart/dtos/insert-cart.dto';
-import { CartEntity } from 'src/cart/entity/cart.entity';
-import { ProductService } from 'src/product/product.service';
+import { InsertCartDto } from '../cart/dtos/insert-cart.dto';
+import { CartEntity } from '../cart/entity/cart.entity';
+import { ProductService } from '../product/product.service';
 
 @Injectable()
 export class CartProductService {
@@ -45,7 +45,7 @@ export class CartProductService {
         cart: CartEntity
     ): Promise<CartProductEntity> {
         await this.productService.findProductById(insertCart.productId);
-        
+
         const cartProduct = await this.verifyProductInCart(insertCart.productId, cart.id).catch(() => undefined);
 
         if (!cartProduct) {
